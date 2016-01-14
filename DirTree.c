@@ -6,6 +6,14 @@
 #include <dirent.h>
 #include <limits.h>
 
+typedef struct link_list{
+  char path[PATH_MAX];
+  struct link_list *next_link;
+} link_list;
+
+link_list * root_link;
+link_list * curr;
+
 void list_dir (const char * dir_name) {
 
   DIR * d;
@@ -30,7 +38,14 @@ void list_dir (const char * dir_name) {
 
     /* Print the name of the file and directory that end with .java. */
     if(strstr(d_name, ".java")) {
-      printf ("%s/%s\n", dir_name, d_name);
+        printf ("Adding: %s/%s\n", dir_name, d_name);
+
+        curr = (link_list *)malloc(sizeof(link_list));
+        strcpy(curr->path, dir_name);
+        strcat(curr->path, "/");
+        strcat(curr->path, d_name);
+        curr->next_link = root_link;
+        root_link = curr;
     }
 
     if (entry->d_type & DT_DIR) {
@@ -54,8 +69,30 @@ void list_dir (const char * dir_name) {
   }
 }
 
+void readFile() {
+  FILE *file;
+  char line[1024];
+  file = fopen (curr->path, "rt");  /* open the file for reading */
+
+  while(fgets(line, 1024, file) != NULL)
+  {
+    printf ("%s\n", line);
+  }
+  fclose(file);  /* close the file prior to exiting the routine */
+}
+
 int main ()
 {
+  root_link = NULL;
   list_dir (".");
+
+    printf("Done Listing Dirs\n");
+  curr = root_link;
+
+  while(curr) {
+    printf("Reading: %s\n", curr->path);
+    readFile();
+    curr = curr->next_link;
+  }
   return 0;
 }
