@@ -8,14 +8,9 @@
 
 typedef struct link_list{
   char path[PATH_MAX];
-  FILE *file
+  FILE *file;
   struct link_list *next_link;
 } link_list;
-
-typedef struct token {
-  int token;
-  char * tokenValue;
-}
 
 link_list * root_link;
 link_list * curr;
@@ -77,7 +72,7 @@ void list_dir (const char * dir_name) {
 
 void readFile() {
   FILE *file;
-  char line[1024];
+  //char line[1024];
   file = fopen (curr->path, "rt");  /* open the file for reading */
   if(file == NULL) {
     printf("Could not find file..");
@@ -87,19 +82,12 @@ void readFile() {
   fclose(file);  /* close the file prior to exiting the routine */
 }
 
-void getWord() {
- char c;
- for(;;) {
-   c = fgetc(curr->file)
- }
-}
-
 int main ()
 {
   root_link = NULL;
   list_dir (".");
 
-    printf("Done Listing Dirs\n");
+   printf("Done Listing Dirs\n");
   curr = root_link;
 
   while(curr) {
